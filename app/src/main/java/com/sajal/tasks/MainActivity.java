@@ -37,18 +37,18 @@ public class MainActivity extends AppCompatActivity {
         final EditText email = findViewById(R.id.editText2);
         final EditText password = findViewById(R.id.editText3);
         final EditText search = findViewById(R.id.editText4);
-
+        final ProgressBar progressBar = findViewById(R.id.progressBar);
         Button button = findViewById(R.id.button);
         Button button2 = findViewById(R.id.button2);
         Button button3 = findViewById(R.id.button3);
         Button button4 = findViewById(R.id.button4);
 
         firebaseDatabase= FirebaseDatabase.getInstance();
+        progressBar.setVisibility(View.INVISIBLE);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 String strname = name.getText().toString();
                 String stremail = email.getText().toString();
                 String strpassword = password.getText().toString();
@@ -60,10 +60,12 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 DatabaseReference reference = firebaseDatabase.getReference("User").child(search.getText().toString());
                 reference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            progressBar.setVisibility(View.INVISIBLE);
                            if (dataSnapshot.exists()) {
                                StringBuffer buffer = new StringBuffer();
                                Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        progressBar.setVisibility(View.INVISIBLE);
                         Toast.makeText(MainActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -94,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 FirebaseFirestore firestore= FirebaseFirestore.getInstance();
                 firestore.collection("User").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -103,11 +107,12 @@ public class MainActivity extends AppCompatActivity {
                             StringBuffer buffer = new StringBuffer();
                             for (DocumentSnapshot d: list) {
                                 User data = d.toObject(User.class);
-                                buffer.append("Name"+data.Name+"\n");
-                                buffer.append("Email"+data.Email+"\n");
-                                buffer.append("Password"+data.Password+"\n\n");
+                                buffer.append("Name: "+data.Name+"\n");
+                                buffer.append("Email: "+data.Email+"\n");
+                                buffer.append("Password: "+data.Password+"\n\n");
 //                                Toast.makeText(MainActivity.this, buffer.toString(), Toast.LENGTH_SHORT).show();
                             }
+                            progressBar.setVisibility(View.INVISIBLE);
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                             builder.setCancelable(true);
                             builder.setTitle("Data");
