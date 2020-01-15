@@ -31,6 +31,9 @@ public class IntroActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (new PreferenceManager(this).checkPreference()){
+            startActivity(new Intent(this,MainActivity.class));
+        }
         setContentView(R.layout.activity_intro);
         viewPager =findViewById(R.id.viewPager);
         adapter=new PageAdapter(layouts,this);
@@ -83,6 +86,7 @@ public class IntroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (currentPage==dots.length-1){
+                    new PreferenceManager(getApplicationContext()).writeSharedPrefernce();
                     startActivity(new Intent(IntroActivity.this,MainActivity.class));
                 }
                 else
