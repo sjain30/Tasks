@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         Button button4 = findViewById(R.id.button4);
 
         firebaseDatabase= FirebaseDatabase.getInstance();
-        progressBar.setVisibility(View.INVISIBLE);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
